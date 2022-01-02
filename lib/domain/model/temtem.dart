@@ -14,10 +14,12 @@ class Temtem {
   int spatk;
   int spdef;
   int total;
+  String image;
 
   Temtem(
       {this.number = "",
       this.name = "",
+      this.image = "",
       this.typeImages = const [],
       this.iconImage = "",
       this.types = const [],

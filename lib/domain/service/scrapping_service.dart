@@ -5,23 +5,6 @@ import 'package:html/parser.dart' show parse;
 import 'package:temtem_wiki/domain/model/temtem.dart';
 
 class ScrappingService {
-  static Future<List<String>> getTemtemListNames() async {
-    List<String> names = [];
-    var parser = await Chaleno()
-        .load("https://temtem.fandom.com/wiki/Temtem_(creatures)");
-    List<Result>? result =
-        parser?.getElementsByClassName("temtemPortrait background");
-    if (result != null) {
-      for (int i = 0; i < result.length; i++) {
-        if ((result[i].title ?? "").isNotEmpty) {
-          names.add(result[i].title!);
-        }
-        //debugPrint("${result[i].title}");
-      }
-    }
-    return names;
-  }
-
   static Future<List<Temtem>> getTemtemData() async {
     var parser = await Chaleno()
         .load("https://temtem.fandom.com/wiki/Temtem_(creatures)");
@@ -55,19 +38,12 @@ class ScrappingService {
     int child = 0;
     data["number"] = row.children[child++].text.trim();
     data["name"] = row.children[child].children[1].attributes["title"];
-    String imagePath = row.children[child].children[0].children[0].children[0]
+    String imagePath = row.children[child++].children[0].children[0].children[0]
             .attributes["data-src"] ??
         "";
-    String imageName = row.children[child++].children[0].children[0].children[0]
-            .attributes["alt"] ??
-        "";
-    data["iconImage"] = imagePath + imageName;
+    data["iconImage"] = imagePath;
     data["typeImages"] = [
-      (row.children[child].children[0].children[0].attributes["data-src"] ??
-              "") +
-          (row.children[child].children[0].children[0]
-                  .attributes["data-image-name"] ??
-              "")
+      (row.children[child].children[0].children[0].attributes["data-src"] ?? "")
     ];
 
     data["types"] = [
@@ -76,10 +52,7 @@ class ScrappingService {
     if (hasDoubleType) {
       data["typeImages"].add(
           (row.children[child].children[0].children[0].attributes["data-src"] ??
-                  "") +
-              (row.children[child].children[0].children[0]
-                      .attributes["data-image-name"] ??
-                  ""));
+              ""));
       data["types"].add(row.children[child].children[1].text);
       child++;
     }
@@ -94,5 +67,21 @@ class ScrappingService {
 
     //debugPrint("$data");
     return Temtem.fromMap(data);
+  }
+
+  static Future<Temtem> completeTemtemInfo(Temtem temtem) async {
+    var parser =
+        await Chaleno().load("https://temtem.fandom.com/wiki/" + temtem.name);
+    var document = parse(parser?.html);
+    Element? lumaImage = document.getElementById("ttw-temtem-luma");
+    String img =
+        lumaImage?.children[0].children[0].children[0].attributes["data-src"] ??
+            "";
+    debugPrint(
+        "${lumaImage?.children[0].children[0].children[0].attributes["data-src"]}");
+
+    temtem.image = img;
+
+    return temtem;
   }
 }
