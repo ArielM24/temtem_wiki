@@ -36,7 +36,8 @@ class ScrappingService {
     bool hasDoubleType = row.children.length == 12;
     Map<String, dynamic> data = {};
     int child = 0;
-    data["number"] = row.children[child++].text.trim();
+    data["number"] =
+        int.parse(row.children[child++].text.trim().replaceAll("#", ""));
     data["name"] = row.children[child].children[1].attributes["title"];
     String imagePath = row.children[child++].children[0].children[0].children[0]
             .attributes["data-src"] ??
@@ -56,6 +57,13 @@ class ScrappingService {
       data["types"].add(row.children[child].children[1].text);
       child++;
     }
+    data = _getStats(row, data, child);
+    //debugPrint("$data");
+    return Temtem.fromMap(data);
+  }
+
+  static Map<String, dynamic> _getStats(
+      Element row, Map<String, dynamic> data, int child) {
     data["hp"] = int.parse(row.children[child++].text.trim());
     data["sta"] = int.parse(row.children[child++].text.trim());
     data["spd"] = int.parse(row.children[child++].text.trim());
@@ -64,15 +72,10 @@ class ScrappingService {
     data["spatk"] = int.parse(row.children[child++].text.trim());
     data["spdef"] = int.parse(row.children[child++].text.trim());
     data["total"] = int.parse(row.children[child++].text.trim());
-
-    //debugPrint("$data");
-    return Temtem.fromMap(data);
+    return data;
   }
 
-  static Future<Temtem> completeTemtemInfo(Temtem temtem) async {
-    var parser =
-        await Chaleno().load("https://temtem.fandom.com/wiki/" + temtem.name);
-    var document = parse(parser?.html);
+  static Temtem _getImages(Document document, Temtem temtem) {
     Element? lumaImage = document.getElementById("ttw-temtem-luma");
     String img =
         lumaImage?.children[0].children[0].children[0].attributes["data-src"] ??
@@ -80,7 +83,20 @@ class ScrappingService {
     debugPrint(
         "${lumaImage?.children[0].children[0].children[0].attributes["data-src"]}");
 
+    temtem.lumaImage = img;
+
+    Element? image = document.getElementById("ttw-temtem");
+    img =
+        image?.children[0].children[0].children[0].attributes["data-src"] ?? "";
     temtem.image = img;
+    return temtem;
+  }
+
+  static Future<Temtem> completeTemtemInfo(Temtem temtem) async {
+    Parser? parser =
+        await Chaleno().load("https://temtem.fandom.com/wiki/" + temtem.name);
+    Document document = parse(parser?.html);
+    temtem = _getImages(document, temtem);
 
     return temtem;
   }

@@ -1,9 +1,7 @@
-import 'package:temtem_wiki/domain/enums/temtem_types.dart';
-
 class Temtem {
-  String number;
+  int number;
   String name;
-  List<TemtemType> types;
+  List<String> types;
   List<String> typeImages;
   String iconImage;
   int hp;
@@ -15,11 +13,13 @@ class Temtem {
   int spdef;
   int total;
   String image;
+  String lumaImage;
 
   Temtem(
-      {this.number = "",
+      {this.number = -1,
       this.name = "",
       this.image = "",
+      this.lumaImage = "",
       this.typeImages = const [],
       this.iconImage = "",
       this.types = const [],
@@ -37,8 +37,10 @@ class Temtem {
         number: map["number"],
         name: map["name"],
         iconImage: map["iconImage"],
-        typeImages: map["typeImages"],
-        types: fromStringList(map["types"]),
+        typeImages: map["typeImages"].cast<String>(),
+        types: map["types"].cast<String>(),
+        image: map["image"] ?? "",
+        lumaImage: map["lumaImage"] ?? "",
         hp: map["hp"],
         sta: map["sta"],
         spd: map["spd"],
@@ -47,5 +49,25 @@ class Temtem {
         spatk: map["spatk"],
         spdef: map["spdef"],
         total: map["total"]);
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "number": number,
+      "name": name,
+      "iconImage": iconImage,
+      "typeImages": typeImages,
+      "types": types,
+      "image": image,
+      "lumaImage": lumaImage,
+      "hp": hp,
+      "sta": sta,
+      "spd": spd,
+      "atk": atk,
+      "def": def,
+      "spatk": spatk,
+      "spdef": spdef,
+      "total": total,
+    };
   }
 }

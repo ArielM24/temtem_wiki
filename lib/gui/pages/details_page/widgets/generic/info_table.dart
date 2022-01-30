@@ -16,7 +16,7 @@ class InfoTable extends StatelessWidget {
         children: [
           Row(children: [
             const TableCellProperty(property: "Number"),
-            TableCellValue(value: Text(temtem.number))
+            TableCellValue(value: Text("#${temtem.number}"))
           ]),
           const Divider(),
           Row(children: [

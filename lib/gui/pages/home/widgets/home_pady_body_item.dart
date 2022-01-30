@@ -17,7 +17,7 @@ class HomePageListItem extends StatelessWidget {
         const SizedBox(width: 10),
         Text(temtem.name),
       ]),
-      leading: Text(temtem.number),
+      leading: Text("#${temtem.number}"),
       onTap: () {
         temtemProvider.temtem = temtem;
         Navigator.of(context)

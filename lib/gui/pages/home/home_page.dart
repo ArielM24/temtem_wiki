@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:temtem_wiki/domain/model/temtem.dart';
+import 'package:temtem_wiki/domain/database/database_dao.dart';
+import 'package:temtem_wiki/domain/database/temtem_dao.dart';
 import 'package:temtem_wiki/domain/provider/temtem_provider.dart';
-import 'package:temtem_wiki/domain/service/scrapping_service.dart';
+import 'package:temtem_wiki/domain/service/scrapping/scrapping_service.dart';
 import 'package:temtem_wiki/gui/pages/home/widgets/home_page_body.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,7 +19,13 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      await DatabaseDao().init();
+    });
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
       temtemProvider.temtemList = await ScrappingService.getTemtemData();
+      await TemtemDao.drop();
+      await temtemProvider.writeDb();
+      debugPrint("${(await TemtemDao.findByNumber(1))?.toMap()}");
     });
   }
 

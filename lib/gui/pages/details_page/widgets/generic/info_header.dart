@@ -3,15 +3,19 @@ import 'package:provider/provider.dart';
 import 'package:temtem_wiki/domain/model/temtem.dart';
 import 'package:temtem_wiki/domain/provider/temtem_provider.dart';
 
-class InfoHeader extends StatelessWidget {
+class InfoHeader extends StatefulWidget {
   const InfoHeader({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    TemtemProvider temtemProvider = Provider.of<TemtemProvider>(context);
+  State<InfoHeader> createState() => _InfoHeaderState();
+}
 
-    Temtem temtem = temtemProvider.temtem;
-    print("header");
+class _InfoHeaderState extends State<InfoHeader> {
+  bool luma = false;
+  late TemtemProvider temtemProvider = Provider.of<TemtemProvider>(context);
+  late Temtem temtem = temtemProvider.temtem;
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
@@ -25,7 +29,7 @@ class InfoHeader extends StatelessWidget {
               height: MediaQuery.of(context).size.height * 0.3,
               child: FittedBox(
                 child: Image.network(
-                  temtem.image.isEmpty ? temtem.iconImage : temtem.image,
+                  selectImage(),
                   width: 50,
                   height: 50,
                 ),
@@ -40,7 +44,7 @@ class InfoHeader extends StatelessWidget {
                   child: ElevatedButton(
                       style:
                           ElevatedButton.styleFrom(primary: Colors.blue[900]),
-                      onPressed: () {},
+                      onPressed: onNormalClick,
                       child: const SizedBox(
                           width: 100, child: Center(child: Text("Normal")))),
                 ),
@@ -49,7 +53,7 @@ class InfoHeader extends StatelessWidget {
                   child: ElevatedButton(
                       style:
                           ElevatedButton.styleFrom(primary: Colors.blue[900]),
-                      onPressed: () {},
+                      onPressed: onLumaClick,
                       child: const SizedBox(
                           width: 100, child: Center(child: Text("Luma")))),
                 ),
@@ -57,5 +61,33 @@ class InfoHeader extends StatelessWidget {
             ))
       ],
     );
+  }
+
+  String selectImage() {
+    bool lumaImage = temtem.lumaImage.isEmpty;
+    bool notImage = temtem.image.isEmpty;
+    debugPrint("select");
+    if (luma) {
+      if (lumaImage) {
+        return temtem.lumaImage;
+      }
+    }
+    if (notImage) {
+      return temtem.iconImage;
+    }
+    return temtem.image;
+  }
+
+  onLumaClick() {
+    setState(() {
+      luma = true;
+    });
+  }
+
+  onNormalClick() {
+    debugPrint("normal");
+    setState(() {
+      luma = false;
+    });
   }
 }

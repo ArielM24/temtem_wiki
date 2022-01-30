@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:temtem_wiki/domain/database/temtem_dao.dart';
 import 'package:temtem_wiki/domain/model/temtem.dart';
 
 class TemtemProvider with ChangeNotifier {
@@ -31,5 +32,11 @@ class TemtemProvider with ChangeNotifier {
   set temtem(Temtem v) {
     _temtem = v;
     notifyListeners();
+  }
+
+  writeDb() async {
+    for (int i = 0; i < _temtemList.length; i++) {
+      await TemtemDao.write(_temtemList[i]);
+    }
   }
 }

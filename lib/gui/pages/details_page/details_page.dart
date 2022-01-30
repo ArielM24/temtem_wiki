@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:temtem_wiki/domain/model/temtem.dart';
 import 'package:temtem_wiki/domain/provider/temtem_provider.dart';
-import 'package:temtem_wiki/domain/service/scrapping_service.dart';
+import 'package:temtem_wiki/domain/service/scrapping/scrapping_service.dart';
 import 'package:temtem_wiki/gui/pages/details_page/widgets/generic/generic_info.dart';
 import 'package:temtem_wiki/gui/pages/details_page/widgets/moves_info.dart';
 
