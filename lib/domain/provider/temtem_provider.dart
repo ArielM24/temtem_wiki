@@ -24,6 +24,7 @@ class TemtemProvider with ChangeNotifier {
     if (index > -1) {
       temtemList[index] = temtem;
       notifyListeners();
+      TemtemDao.upsert(temtemList[index]);
     }
   }
 
@@ -34,9 +35,10 @@ class TemtemProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  writeDb() async {
+  updateDb() async {
     for (int i = 0; i < _temtemList.length; i++) {
-      await TemtemDao.write(_temtemList[i]);
+      debugPrint("updating $i ${_temtemList[i].name}");
+      await TemtemDao.upsert(_temtemList[i]);
     }
   }
 }

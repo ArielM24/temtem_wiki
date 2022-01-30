@@ -23,6 +23,7 @@ class TemtemDao {
   }
 
   static Future<Temtem?> findByNumber(int number) async {
+    debugPrint("searching number $number");
     var record = await store.findFirst(DatabaseDao().db,
         finder: Finder(filter: Filter.equals("number", number)));
     //debugPrint("records ${record.runtimeType} ${record?.value}");
@@ -38,8 +39,11 @@ class TemtemDao {
   static write(Temtem temtem) async {
     debugPrint("writing temtem");
     var key = await store.add(DatabaseDao().db, temtem.toMap());
-    debugPrint("key ${key}");
-    var record = await store.record(key).getSnapshot(DatabaseDao().db);
-    //debugPrint("record ${record}");
+  }
+
+  static upsert(Temtem temtem) async {
+    await store
+        .record(temtem.number)
+        .put(DatabaseDao().db, temtem.toMap(), merge: true);
   }
 }

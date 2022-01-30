@@ -20,12 +20,11 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
       await DatabaseDao().init();
-    });
-    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      await TemtemDao.init();
       temtemProvider.temtemList = await ScrappingService.getTemtemData();
-      await TemtemDao.drop();
-      await temtemProvider.writeDb();
-      debugPrint("${(await TemtemDao.findByNumber(1))?.toMap()}");
+      //await TemtemDao.drop();
+      await temtemProvider.updateDb();
+      //debugPrint("${(await TemtemDao.findByNumber(1))?.toMap()}");
     });
   }
 
@@ -47,9 +46,8 @@ class _HomePageState extends State<HomePage> {
     temtemProvider.temtemList = [];
 
     temtemProvider.temtemList = await ScrappingService.getTemtemData();
-
+    temtemProvider.updateDb();
     setState(() {});
-    await ScrappingService.getTemtemData();
     debugPrint("${temtemProvider.temtemList.length}");
   }
 }

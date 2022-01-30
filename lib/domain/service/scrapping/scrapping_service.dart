@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:temtem_wiki/domain/model/temtem.dart';
+import 'package:temtem_wiki/domain/service/image_service.dart';
 
 class ScrappingService {
   static Future<List<Temtem>> getTemtemData() async {
@@ -75,20 +76,19 @@ class ScrappingService {
     return data;
   }
 
-  static Temtem _getImages(Document document, Temtem temtem) {
+  static Future<Temtem> _getImages(Document document, Temtem temtem) async {
     Element? lumaImage = document.getElementById("ttw-temtem-luma");
     String img =
         lumaImage?.children[0].children[0].children[0].attributes["data-src"] ??
             "";
-    debugPrint(
-        "${lumaImage?.children[0].children[0].children[0].attributes["data-src"]}");
-
     temtem.lumaImage = img;
-
+    temtem.lumaBytes = await getImageBytes(temtem.lumaImage);
     Element? image = document.getElementById("ttw-temtem");
     img =
         image?.children[0].children[0].children[0].attributes["data-src"] ?? "";
     temtem.image = img;
+    temtem.normalBytes = await getImageBytes(temtem.image);
+
     return temtem;
   }
 
@@ -96,7 +96,7 @@ class ScrappingService {
     Parser? parser =
         await Chaleno().load("https://temtem.fandom.com/wiki/" + temtem.name);
     Document document = parse(parser?.html);
-    temtem = _getImages(document, temtem);
+    temtem = await _getImages(document, temtem);
 
     return temtem;
   }

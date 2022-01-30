@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 class Temtem {
   int number;
   String name;
@@ -14,6 +16,8 @@ class Temtem {
   int total;
   String image;
   String lumaImage;
+  Uint8List? normalBytes;
+  Uint8List? lumaBytes;
 
   Temtem(
       {this.number = -1,
@@ -23,6 +27,8 @@ class Temtem {
       this.typeImages = const [],
       this.iconImage = "",
       this.types = const [],
+      this.normalBytes,
+      this.lumaBytes,
       this.hp = 0,
       this.sta = 0,
       this.spd = 0,
@@ -41,6 +47,8 @@ class Temtem {
         types: map["types"].cast<String>(),
         image: map["image"] ?? "",
         lumaImage: map["lumaImage"] ?? "",
+        normalBytes: Uint8List.fromList((map["normalBytes"] ?? []).cast<int>()),
+        lumaBytes: Uint8List.fromList((map["lumaBytes"] ?? []).cast<int>()),
         hp: map["hp"],
         sta: map["sta"],
         spd: map["spd"],
@@ -60,6 +68,8 @@ class Temtem {
       "types": types,
       "image": image,
       "lumaImage": lumaImage,
+      "normalBytes": (normalBytes ?? []).toList(),
+      "lumaBytes": (lumaBytes ?? []).toList(),
       "hp": hp,
       "sta": sta,
       "spd": spd,
