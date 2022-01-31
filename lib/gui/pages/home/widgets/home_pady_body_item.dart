@@ -13,7 +13,9 @@ class HomePageListItem extends StatelessWidget {
     TemtemProvider temtemProvider = Provider.of<TemtemProvider>(context);
     return ListTile(
       title: Wrap(children: [
-        Image.network(temtem.iconImage),
+        (temtem.normalBytes?.isEmpty ?? true)
+            ? Image.network(temtem.iconImage, height: 60, width: 60)
+            : Image.memory(temtem.normalBytes!, height: 60, width: 60),
         const SizedBox(width: 10),
         Text(temtem.name),
       ]),

@@ -12,6 +12,7 @@ class InfoHeader extends StatefulWidget {
 
 class _InfoHeaderState extends State<InfoHeader> {
   bool luma = false;
+  bool lumaButton = false;
   late TemtemProvider temtemProvider = Provider.of<TemtemProvider>(context);
   late Temtem temtem = temtemProvider.temtem;
   @override
@@ -28,11 +29,23 @@ class _InfoHeaderState extends State<InfoHeader> {
               width: MediaQuery.of(context).size.height * 0.3,
               height: MediaQuery.of(context).size.height * 0.3,
               child: FittedBox(
-                child: Image.network(
-                  selectImage(),
-                  width: 50,
-                  height: 50,
-                ),
+                child: (temtem.normalBytes?.isEmpty ?? true)
+                    ? Image.network(
+                        selectImage(),
+                        width: 50,
+                        height: 50,
+                      )
+                    : luma
+                        ? Image.memory(
+                            temtem.lumaBytes!,
+                            width: 50,
+                            height: 50,
+                          )
+                        : Image.memory(
+                            temtem.normalBytes!,
+                            width: 50,
+                            height: 50,
+                          ),
               )),
         ),
         Expanded(
@@ -44,7 +57,9 @@ class _InfoHeaderState extends State<InfoHeader> {
                   child: ElevatedButton(
                       style:
                           ElevatedButton.styleFrom(primary: Colors.blue[900]),
-                      onPressed: onNormalClick,
+                      onPressed: (temtem.normalBytes?.isEmpty ?? true)
+                          ? null
+                          : onNormalClick,
                       child: const SizedBox(
                           width: 100, child: Center(child: Text("Normal")))),
                 ),
@@ -53,7 +68,9 @@ class _InfoHeaderState extends State<InfoHeader> {
                   child: ElevatedButton(
                       style:
                           ElevatedButton.styleFrom(primary: Colors.blue[900]),
-                      onPressed: onLumaClick,
+                      onPressed: (temtem.lumaBytes?.isEmpty ?? true)
+                          ? null
+                          : onLumaClick,
                       child: const SizedBox(
                           width: 100, child: Center(child: Text("Luma")))),
                 ),

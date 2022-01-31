@@ -23,10 +23,12 @@ class _DetailsPageState extends State<DetailsPage> {
     super.initState();
     content = GenericInfo(temtem: widget.temtem);
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
-      Future.delayed(const Duration(seconds: 1)).then((_) async {
-        temtemProvider.updateInfo(
-            await ScrappingService.completeTemtemInfo(widget.temtem));
-      });
+      if (temtemProvider.temtem.normalBytes?.isEmpty ?? true) {
+        Future.delayed(const Duration(seconds: 1)).then((_) async {
+          temtemProvider.updateInfo(
+              await ScrappingService.completeTemtemInfo(widget.temtem));
+        });
+      }
     });
   }
 

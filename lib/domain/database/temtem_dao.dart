@@ -12,9 +12,19 @@ class TemtemDao {
     });
   }
 
-  static readAll() async {
+  static Future<List<Temtem>> readAll() async {
     var records = await store.find(DatabaseDao().db);
     debugPrint("records ${records.length}");
+    List<Temtem> result = [];
+    for (int i = 0; i < records.length; i++) {
+      try {
+        var temp = Temtem.fromMap(records[i].value);
+        result.add(temp);
+      } catch (ex) {
+        debugPrint("$ex");
+      }
+    }
+    return result;
   }
 
   static drop() async {

@@ -19,12 +19,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
-      await DatabaseDao().init();
-      await TemtemDao.init();
-      temtemProvider.temtemList = await ScrappingService.getTemtemData();
-      //await TemtemDao.drop();
-      await temtemProvider.updateDb();
-      //debugPrint("${(await TemtemDao.findByNumber(1))?.toMap()}");
+      temtemProvider.temtemList = await TemtemDao.readAll();
     });
   }
 
