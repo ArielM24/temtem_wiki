@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:temtem_wiki/domain/model/temtem.dart';
 import 'package:temtem_wiki/domain/provider/temtem_provider.dart';
 
 class InfoHeader extends StatefulWidget {
@@ -13,10 +12,14 @@ class InfoHeader extends StatefulWidget {
 class _InfoHeaderState extends State<InfoHeader> {
   bool luma = false;
   bool lumaButton = false;
-  late TemtemProvider temtemProvider = Provider.of<TemtemProvider>(context);
-  late Temtem temtem = temtemProvider.temtem;
+  // late TemtemProvider temtemProvider = Provider.of<TemtemProvider>(context);
+  // late Temtem temtem = temtemProvider.temtem;
   @override
   Widget build(BuildContext context) {
+    // bool normalBytesEmpty = context.select<TemtemProvider, bool>(
+    //     (p) => p.temtem.normalBytes?.isEmpty ?? true);
+    bool lumaBytesEmpty = context.select<TemtemProvider, bool>(
+        (p) => p.temtem.lumaBytes?.isEmpty ?? true);
     return Row(
       children: [
         Expanded(
@@ -29,23 +32,28 @@ class _InfoHeaderState extends State<InfoHeader> {
               width: MediaQuery.of(context).size.height * 0.3,
               height: MediaQuery.of(context).size.height * 0.3,
               child: FittedBox(
-                child: (temtem.normalBytes?.isEmpty ?? true)
-                    ? Image.network(
-                        selectImage(),
-                        width: 50,
-                        height: 50,
-                      )
-                    : luma
-                        ? Image.memory(
-                            temtem.lumaBytes!,
-                            width: 50,
-                            height: 50,
-                          )
-                        : Image.memory(
-                            temtem.normalBytes!,
-                            width: 50,
-                            height: 50,
-                          ),
+                child: Consumer<TemtemProvider>(builder: (context, p, _) {
+                  if (p.temtem.normalBytes?.isEmpty ?? true) {
+                    return Image.network(
+                      selectImage(),
+                      width: 50,
+                      height: 50,
+                    );
+                  }
+                  if (luma) {
+                    debugPrint("luma");
+                    return Image.memory(
+                      TemtemProvider().temtem.lumaBytes!,
+                      width: 50,
+                      height: 50,
+                    );
+                  }
+                  return Image.memory(
+                    TemtemProvider().temtem.normalBytes!,
+                    width: 50,
+                    height: 50,
+                  );
+                }),
               )),
         ),
         Expanded(
@@ -54,23 +62,26 @@ class _InfoHeaderState extends State<InfoHeader> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                      style:
-                          ElevatedButton.styleFrom(primary: Colors.blue[900]),
-                      onPressed: (temtem.normalBytes?.isEmpty ?? true)
-                          ? null
-                          : onNormalClick,
-                      child: const SizedBox(
-                          width: 100, child: Center(child: Text("Normal")))),
+                  child: Consumer<TemtemProvider>(
+                    builder: (context, p, _) {
+                      return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.blue[900]),
+                          onPressed: (p.temtem.normalBytes?.isEmpty ?? true)
+                              ? null
+                              : onNormalClick,
+                          child: const SizedBox(
+                              width: 100,
+                              child: Center(child: Text("Normal"))));
+                    },
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                       style:
                           ElevatedButton.styleFrom(primary: Colors.blue[900]),
-                      onPressed: (temtem.lumaBytes?.isEmpty ?? true)
-                          ? null
-                          : onLumaClick,
+                      onPressed: (lumaBytesEmpty) ? null : onLumaClick,
                       child: const SizedBox(
                           width: 100, child: Center(child: Text("Luma")))),
                 ),
@@ -81,18 +92,18 @@ class _InfoHeaderState extends State<InfoHeader> {
   }
 
   String selectImage() {
-    bool lumaImage = temtem.lumaImage.isEmpty;
-    bool notImage = temtem.image.isEmpty;
+    bool lumaImage = TemtemProvider().temtem.lumaImage.isEmpty;
+    bool notImage = TemtemProvider().temtem.image.isEmpty;
     debugPrint("select");
     if (luma) {
       if (lumaImage) {
-        return temtem.lumaImage;
+        return TemtemProvider().temtem.lumaImage;
       }
     }
     if (notImage) {
-      return temtem.iconImage;
+      return TemtemProvider().temtem.iconImage;
     }
-    return temtem.image;
+    return TemtemProvider().temtem.image;
   }
 
   onLumaClick() {
@@ -102,7 +113,6 @@ class _InfoHeaderState extends State<InfoHeader> {
   }
 
   onNormalClick() {
-    debugPrint("normal");
     setState(() {
       luma = false;
     });

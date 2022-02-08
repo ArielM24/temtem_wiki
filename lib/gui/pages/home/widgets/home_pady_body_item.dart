@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:temtem_wiki/domain/model/temtem.dart';
 import 'package:temtem_wiki/domain/provider/temtem_provider.dart';
 import 'package:temtem_wiki/gui/pages/details_page/details_page.dart';
+import 'package:temtem_wiki/gui/theme/theme.dart';
 
 class HomePageListItem extends StatelessWidget {
   final Temtem temtem;
@@ -10,23 +10,29 @@ class HomePageListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TemtemProvider temtemProvider = Provider.of<TemtemProvider>(context);
-    return ListTile(
-      title: Wrap(children: [
-        (temtem.normalBytes?.isEmpty ?? true)
-            ? Image.network(temtem.iconImage, height: 60, width: 60)
-            : Image.memory(temtem.normalBytes!, height: 60, width: 60),
-        const SizedBox(width: 10),
-        Text(temtem.name),
-      ]),
-      leading: Text("#${temtem.number}"),
-      onTap: () {
-        temtemProvider.temtem = temtem;
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (BuildContext context) {
-          return DetailsPage(temtem: temtem);
-        }));
-      },
+    return Container(
+      margin: const EdgeInsets.all(5),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          border: Border.all(color: AppTheme.primaryColor)),
+      child: ListTile(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        title: Wrap(children: [
+          (temtem.normalBytes?.isEmpty ?? true)
+              ? Image.network(temtem.iconImage, height: 60, width: 60)
+              : Image.memory(temtem.normalBytes!, height: 60, width: 60),
+          const SizedBox(width: 10),
+          Text(temtem.name),
+        ]),
+        leading: Text("#${temtem.number}"),
+        onTap: () {
+          TemtemProvider().temtem = temtem;
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (BuildContext context) {
+            return const DetailsPage();
+          }));
+        },
+      ),
     );
   }
 }

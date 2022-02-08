@@ -4,15 +4,14 @@ import 'package:temtem_wiki/gui/pages/details_page/widgets/generic/info_header.d
 import 'package:temtem_wiki/gui/pages/details_page/widgets/generic/info_table.dart';
 
 class GenericInfo extends StatelessWidget {
-  final Temtem temtem;
-  const GenericInfo({Key? key, required this.temtem}) : super(key: key);
+  const GenericInfo({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(8),
       child: ListView(
-        children: [InfoHeader(), InfoTable(temtem: temtem)],
+        children: [const InfoHeader(), const InfoTable()],
       ),
     );
   }

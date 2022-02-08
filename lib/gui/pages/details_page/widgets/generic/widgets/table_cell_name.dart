@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 
-class TableCellProperty extends StatelessWidget {
+class TableCellName extends StatelessWidget {
   final String property;
-  const TableCellProperty({Key? key, required this.property}) : super(key: key);
+  const TableCellName({Key? key, required this.property}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.white12),
+          color: Colors.blue[900],
+        ),
         height: 43,
-        color: Colors.blue[900],
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(

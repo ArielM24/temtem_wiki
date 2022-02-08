@@ -10,6 +10,13 @@ class TemtemProvider with ChangeNotifier {
     return _instance;
   }
 
+  Temtem _temtem = Temtem();
+  Temtem get temtem => _temtem;
+  set temtem(Temtem v) {
+    _temtem = v;
+    notifyListeners();
+  }
+
   List<Temtem> _temtemList = [];
 
   List<Temtem> get temtemList => _temtemList;
@@ -26,13 +33,6 @@ class TemtemProvider with ChangeNotifier {
       notifyListeners();
       TemtemDao.upsert(temtemList[index]);
     }
-  }
-
-  Temtem _temtem = Temtem();
-  Temtem get temtem => _temtem;
-  set temtem(Temtem v) {
-    _temtem = v;
-    notifyListeners();
   }
 
   updateDb() async {

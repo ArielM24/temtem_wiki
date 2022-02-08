@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:temtem_wiki/domain/database/database_dao.dart';
 import 'package:temtem_wiki/domain/database/temtem_dao.dart';
 import 'package:temtem_wiki/domain/provider/temtem_provider.dart';
 import 'package:temtem_wiki/domain/service/scrapping/scrapping_service.dart';
@@ -14,12 +12,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late TemtemProvider temtemProvider = Provider.of<TemtemProvider>(context);
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
-      temtemProvider.temtemList = await TemtemDao.readAll();
+      TemtemProvider().temtemList = await TemtemDao.readAll();
     });
   }
 
@@ -29,7 +26,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text("scrap"),
       ),
-      body: HomePageBody(temtemList: temtemProvider.temtemList),
+      body: const HomePageBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: scrap,
         child: const Icon(Icons.replay_outlined),
@@ -38,6 +35,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   scrap() async {
+    TemtemProvider temtemProvider = TemtemProvider();
     temtemProvider.temtemList = [];
 
     temtemProvider.temtemList = await ScrappingService.getTemtemData();

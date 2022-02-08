@@ -10,8 +10,9 @@ class TableCellValue extends StatelessWidget {
         flex: 1,
         child: Container(
           height: 43,
-          decoration:
-              BoxDecoration(border: Border.all(color: Colors.blue[900]!)),
+          decoration: BoxDecoration(
+              border:
+                  Border.all(color: const Color.fromARGB(255, 44, 154, 187))),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: value,

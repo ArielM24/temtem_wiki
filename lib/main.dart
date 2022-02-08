@@ -4,6 +4,7 @@ import 'package:temtem_wiki/domain/database/database_dao.dart';
 import 'package:temtem_wiki/domain/database/temtem_dao.dart';
 import 'package:temtem_wiki/domain/provider/temtem_provider.dart';
 import 'package:temtem_wiki/gui/pages/home/home_page.dart';
+import 'package:temtem_wiki/gui/theme/theme.dart';
 
 void main() async {
   await DatabaseDao().init();
@@ -37,10 +38,9 @@ class _MyAppState extends State<MyApp> {
       providers: [ChangeNotifierProvider(create: (_) => TemtemProvider())],
       child: MaterialApp(
         title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
+        theme: AppTheme.lightTheme,
         home: const HomePage(),
+        themeMode: AppTheme.themeMode,
       ),
     );
   }
