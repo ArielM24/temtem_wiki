@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:path_provider/path_provider.dart';
 import 'package:temtem_wiki/domain/service/image_service.dart';
+import 'package:temtem_wiki/domain/util/directories_utils.dart';
 
 class Temtem {
   int number;
@@ -93,7 +95,8 @@ class Temtem {
   }
 
   Future<void> createImagesDirectory() async {
-    Directory imagesDirectory = Directory("images/temtem/");
+    Directory imagesDirectory =
+        Directory("${await documentsPath()}/images/temtem/");
     if (!imagesDirectory.existsSync()) {
       await imagesDirectory.create(recursive: true);
     }
@@ -103,14 +106,17 @@ class Temtem {
     await createImagesDirectory();
     if (lumaImage.isNotEmpty) {
       String? fileName = await writeImageBytes(
-          url: lumaImage, fileName: "images/temtem/${name}_luma.png");
+          url: lumaImage,
+          fileName: "${await documentsPath()}/images/temtem/${name}_luma.png");
       if (fileName != null) {
         lumaImageFile = fileName;
+        print(lumaImageFile);
       }
     }
     if (image.isNotEmpty) {
       String? fileName = await writeImageBytes(
-          url: image, fileName: "images/temtem/$name.png");
+          url: image,
+          fileName: "${await documentsPath()}/images/temtem/$name.png");
       if (fileName != null) {
         normalImageFile = fileName;
       }
