@@ -20,7 +20,7 @@ class _DetailsPageState extends State<DetailsPage> {
     super.initState();
     content = GenericInfo();
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
-      if (TemtemProvider().temtem.normalBytes?.isEmpty ?? true) {
+      if (TemtemProvider().temtem.normalImageFile.isEmpty) {
         Future.delayed(const Duration(seconds: 1)).then((_) async {
           TemtemProvider().updateInfo(await ScrappingService.completeTemtemInfo(
               TemtemProvider().temtem));

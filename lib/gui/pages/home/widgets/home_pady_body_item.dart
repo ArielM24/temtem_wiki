@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:temtem_wiki/domain/model/temtem.dart';
 import 'package:temtem_wiki/domain/provider/temtem_provider.dart';
@@ -18,9 +20,9 @@ class HomePageListItem extends StatelessWidget {
       child: ListTile(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         title: Wrap(children: [
-          (temtem.normalBytes?.isEmpty ?? true)
+          (temtem.normalImageFile.isEmpty)
               ? Image.network(temtem.iconImage, height: 60, width: 60)
-              : Image.memory(temtem.normalBytes!, height: 60, width: 60),
+              : Image.file(File(temtem.normalImageFile), height: 60, width: 60),
           const SizedBox(width: 10),
           Text(temtem.name),
         ]),

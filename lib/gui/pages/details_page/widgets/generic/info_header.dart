@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:temtem_wiki/domain/provider/temtem_provider.dart';
@@ -18,8 +20,8 @@ class _InfoHeaderState extends State<InfoHeader> {
   Widget build(BuildContext context) {
     // bool normalBytesEmpty = context.select<TemtemProvider, bool>(
     //     (p) => p.temtem.normalBytes?.isEmpty ?? true);
-    bool lumaBytesEmpty = context.select<TemtemProvider, bool>(
-        (p) => p.temtem.lumaBytes?.isEmpty ?? true);
+    bool lumaBytesEmpty = context
+        .select<TemtemProvider, bool>((p) => p.temtem.lumaImageFile.isEmpty);
     return Row(
       children: [
         Expanded(
@@ -33,7 +35,7 @@ class _InfoHeaderState extends State<InfoHeader> {
               height: MediaQuery.of(context).size.height * 0.3,
               child: FittedBox(
                 child: Consumer<TemtemProvider>(builder: (context, p, _) {
-                  if (p.temtem.normalBytes?.isEmpty ?? true) {
+                  if (p.temtem.normalImageFile.isEmpty) {
                     return Image.network(
                       selectImage(),
                       width: 50,
@@ -42,14 +44,14 @@ class _InfoHeaderState extends State<InfoHeader> {
                   }
                   if (luma) {
                     debugPrint("luma");
-                    return Image.memory(
-                      TemtemProvider().temtem.lumaBytes!,
+                    return Image.file(
+                      File(TemtemProvider().temtem.lumaImageFile),
                       width: 50,
                       height: 50,
                     );
                   }
-                  return Image.memory(
-                    TemtemProvider().temtem.normalBytes!,
+                  return Image.file(
+                    File(TemtemProvider().temtem.normalImageFile),
                     width: 50,
                     height: 50,
                   );
@@ -67,7 +69,7 @@ class _InfoHeaderState extends State<InfoHeader> {
                       return ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               primary: Colors.blue[900]),
-                          onPressed: (p.temtem.normalBytes?.isEmpty ?? true)
+                          onPressed: (p.temtem.normalImageFile.isEmpty)
                               ? null
                               : onNormalClick,
                           child: const SizedBox(

@@ -82,13 +82,37 @@ class ScrappingService {
         lumaImage?.children[0].children[0].children[0].attributes["data-src"] ??
             "";
     temtem.lumaImage = img;
-    temtem.lumaBytes = await getImageBytes(temtem.lumaImage);
+
     Element? image = document.getElementById("ttw-temtem");
     img =
         image?.children[0].children[0].children[0].attributes["data-src"] ?? "";
+    if (img.isEmpty) {
+      img = image?.children[0].children[0].children[0].attributes["src"] ?? "";
+    }
+    debugPrint("img src $img");
     temtem.image = img;
-    temtem.normalBytes = await getImageBytes(temtem.image);
 
+    await temtem.writeImagesBytes();
+
+    return temtem;
+  }
+
+  static Future<Temtem> _getGenderInfo(Document document, Temtem temtem) async {
+    Element? genderInfo = document.querySelector(".gender-ratio");
+    List<Element> children = genderInfo?.children ?? [];
+    if (children.length > 1) {
+      for (int i = 0; i < 2; i++) {
+        String aux = children[i].attributes["style"] ?? "width:0%;";
+        aux = aux.split(":")[1].split("%")[0];
+        if (children[i].className == "male") {
+          temtem.maleRatio = int.parse(aux);
+          debugPrint("male: $aux");
+        } else if (children[i].className == "female") {
+          temtem.femaleRatio = int.parse(aux);
+          debugPrint("female: $aux");
+        }
+      }
+    }
     return temtem;
   }
 
@@ -97,7 +121,7 @@ class ScrappingService {
         await Chaleno().load("https://temtem.fandom.com/wiki/" + temtem.name);
     Document document = parse(parser?.html);
     temtem = await _getImages(document, temtem);
-
+    temtem = await _getGenderInfo(document, temtem);
     return temtem;
   }
 }
